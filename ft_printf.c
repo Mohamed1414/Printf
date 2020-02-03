@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/03 18:54:07 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/03 20:21:49 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int		ft_printf(const char *format, ...)
 
 	if (!(pack = malloc(sizeof(t_printf))))
 		return (-1);
+	pack->size = 0;
 	va_start(pack->arg, format);
 	ft_write(pack, format);
 	return (pack->size);
@@ -83,6 +84,7 @@ int		main()
 	char c;
 
 	c = 'c';
-	ft_printf("hello world %c hola que tal %c", 'l', 'a');
+	printf("%d\n", ft_printf("hello world %c hola que tal %c", 'l', 'a'));
+	printf("%d\n", printf("hello world %c hola que tal %c", 'l', 'a'));
 	return (0);
 }
