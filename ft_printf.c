@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/04 18:43:19 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/04 19:16:15 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,20 @@ void	ft_IsInt(t_printf *pack)
 {
 	void	*arg;
 	int		cont;
+	char	*width;
 
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
 	pack->d = ft_itoa((int)arg);
 	while (pack->d[cont] != '\0')
 	{
+		if (pack->zero == 1)
+		{
+			pack->width = ft_atoi(pack->format[pack->posi]); // guardar como int el ancho despues de que aparezca el flag 0
+			//meter los ceros hasta completar el ancho
+			while (ft_isdigit(pack->format[pack->posi]) == 1) // avanzar la posición de format hasta que se encuentre con la letra
+				pack->posi++;
+		}
 		write(1, &pack->d[cont], 1);
 		cont++;
 		pack->size++;
@@ -96,6 +104,6 @@ int		ft_printf(const char *format, ...)
 int		main()
 {
 	printf("%d\n", ft_printf("hello %d world %c hola que tal %c %d", 15, 'l', 'a', -13));
-	printf("%d\n", printf("hello %d world %c hola que tal %c %d", 15, 'l', 'a', -13));
+	printf("%d\n", printf("hello %d world %c hola que tal %c %0d", 15, 'l', 'a', -13));
 	return (0);
 }
