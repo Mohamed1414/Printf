@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/03 18:18:33 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/04 18:29:45 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct s_printf {
 	va_list	arg;
 	const char *format;
 	int		posi;
+	char	*d;
 	char	c;
 	int		size;
 	int		zero;
@@ -29,4 +30,5 @@ typedef struct s_printf {
 	int 	dot;
 	int		aster;
 } t_printf;
+char		*ft_itoa(int n);
 #endif
