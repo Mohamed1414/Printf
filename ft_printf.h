@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/04 19:17:41 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/05 13:15:39 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,6 @@ typedef struct s_printf {
 char		*ft_itoa(int n);
 int			ft_atoi(const char *str);
 int			ft_isdigit(int c);
+int			ft_isalpha(int c);
+int			ft_strlen(const char *s);
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/04 17:47:49 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/04 19:18:01 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/05 13:15:46 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,21 @@ char			*ft_itoa(int n)
 	if (cont > 0)
 		p[i + 1] = '-';
 	return (p);
+}
+
+int		ft_isalpha(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
+	return (0);
+}
+
+int		ft_strlen(const char *s)
+{
+	unsigned int i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
 }
