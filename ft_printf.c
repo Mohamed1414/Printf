@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/05 18:05:25 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/06 18:16:39 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,36 @@
 
 void	ft_flags(t_printf *pack)
 {
-	if (pack->format[pack->posi] == '0')
+	if (pack->format[pack->posi] == '0' && pack->posi++)
 		pack->zero = 1;
-	if (pack->format[pack->posi] == '-')
+	if (pack->format[pack->posi] == '-' && pack->posi++)
 		pack->minus = 1;
-	if (pack->format[pack->posi] == '*')
+	if (pack->format[pack->posi] == '*' && pack->posi++)
 		pack->aster = 1;
-	if (pack->format[pack->posi] == '.')
+	if (pack->format[pack->posi] == '.' && pack->posi++)
+	{
 		pack->dot = 1;
-		pack->posi++;
 		if(ft_isdigit(pack->format[pack->posi] == 1))
 		{
-			pack->precision = ft_atoi(&pack->format[pack->posi]);
+			pack->precision = ft_atoi(&pack->format[pack->posi]); // guardando la precision cuando encuentra el punto
 			while (ft_isdigit(pack->format[pack->posi] == 1))
 				pack->posi++;
 		}
 		else if (pack->aster == 1)
 		{
-			pack->precision = ft_atoi(va_arg(pack->arg, int));
+			pack->precision = va_arg(pack->arg, int); //cogiendo la precision como argumento en el caso de encontrar el '*'
 			pack->posi++;
 		}
-	pack->posi++;
-	if (ft_isdigit(pack->format[pack->posi] == 1))
+	}
+	if (ft_isdigit(pack->format[pack->posi]) == 1)
 	{
-		pack->width = ft_atoi(&pack->format[pack->posi]);
-		while (ft_isdigit(pack->format[pack->posi] == 1))
+		pack->width = ft_atoi(&pack->format[pack->posi]); //guardando el ancho 
+		while (ft_isdigit(pack->format[pack->posi]) == 1)
 			pack->posi++;
 	}
 	else if (pack->aster == 1)
 	{
-		pack->width = ft_atoi(va_arg(pack->arg, int));
+		pack->width = va_arg(pack->arg, int); // cogiendo el ancho como argumento cuando se encuentra el '*'
 		pack->posi++;
 	}
 }
@@ -70,19 +70,12 @@ void	ft_int(t_printf *pack)
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
 	pack->d = ft_itoa((int)arg);
+	len = ft_strlen(pack->d);
+	if (pack->zero == 1)
+		if (pack->width > ft_strlen(pack->d))//meter los ceros hasta completar el ancho
+			ft_printhings(pack, len, '0');
 	while (pack->d[cont] != '\0')
 	{
-		if (pack->zero == 1)
-		{
-		//	pack->width = ft_atoi(&pack->format[pack->posi]); // guardar como int el ancho despues de que aparezca el flag 0
-			if(pack->width > ft_strlen(pack->d))//meter los ceros hasta completar el ancho
-			{
-				len = ft_strlen(pack->d);
-				ft_printhings(pack, len, '0');
-			}
-			while (ft_isdigit(pack->format[pack->posi]) == 1) // avanzar la posición de format hasta que se encuentre con la letra
-				pack->posi++;
-		}
 		write(1, &pack->d[cont], 1);
 		cont++;
 		pack->size++;
@@ -99,6 +92,8 @@ void	ft_init(t_printf *pack, const char *format)
 	pack->aster = 0;
 	pack->c = 0;
 	pack->d = 0;
+	pack->precision = 0;
+	pack->width = 0;
 }
 
 void	ft_char(t_printf *pack)
@@ -146,7 +141,7 @@ int		ft_printf(const char *format, ...)
 
 int		main()
 {
-	printf("%d\n", ft_printf("hello %06d world %c hola que tal %c %033d", 15, 'l', 'a', -13));
-	printf("%d\n", printf("hello %06d world %c hola que tal %c %033d", 15, 'l', 'a', -13));
+	printf("%d\n", ft_printf("hello %06d %d", 15, -13));
+	printf("%d\n", printf("hello %06d %d", 15, -13));
 	return (0);
 }
