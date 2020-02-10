@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/05 13:15:39 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/10 17:19:59 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct s_printf {
 	va_list	arg;
 	const char *format;
 	int		posi;
+	char	*s;
 	char	*d;
 	char	c;
 	int		size;

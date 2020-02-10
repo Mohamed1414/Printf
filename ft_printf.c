@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/06 18:16:39 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/10 19:02:54 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ void	ft_flags(t_printf *pack)
 	if (pack->format[pack->posi] == '.' && pack->posi++)
 	{
 		pack->dot = 1;
-		if(ft_isdigit(pack->format[pack->posi] == 1))
+		if (ft_isdigit(pack->format[pack->posi]) == 1)
 		{
 			pack->precision = ft_atoi(&pack->format[pack->posi]); // guardando la precision cuando encuentra el punto
-			while (ft_isdigit(pack->format[pack->posi] == 1))
+			while (ft_isdigit(pack->format[pack->posi]) == 1)
 				pack->posi++;
 		}
 		else if (pack->aster == 1)
@@ -81,11 +81,8 @@ void	ft_int(t_printf *pack)
 		pack->size++;
 	}
 }
-void	ft_init(t_printf *pack, const char *format)
+void	ft_init(t_printf *pack)
 {
-	pack->format = format;
-	pack->size = 0;
-	pack->posi = 0;
 	pack->zero = 0;
 	pack->dot = 0;
 	pack->minus = 0;
@@ -101,8 +98,69 @@ void	ft_char(t_printf *pack)
 	void	*arg;
 	arg = va_arg(pack->arg, void *);
 	pack->c = (char)arg;
-	write(1, &pack->c, 1);
-	pack->size++;
+	if (pack->minus == 1)
+	{
+		write(1, &pack->c, 1);
+		pack->size++;
+		ft_printhings(pack, 1, ' ');
+	}
+	else if (pack->width > 1)
+	{
+		ft_printhings(pack, 1, ' ');
+		write(1, &pack->c, 1);
+		pack->size++;
+	}
+}
+void	ft_istring(t_printf *pack)
+{
+	int		cont;
+
+	cont = -1;
+	pack->s = (char *)va_arg(pack->arg, void *);
+	if (pack->width != 0)
+	{
+		if (pack->minus == 1)
+		{
+			while (pack->s[++cont])
+			{
+				write(1, &pack->s[cont], 1);
+				pack->size++;
+			}
+			ft_printhings(pack, ft_strlen(pack->s), ' ');
+		}
+		else
+			ft_printhings(pack, ft_strlen(pack->s), ' ');
+	}
+	if (pack->dot == 1)
+	{
+		if (pack->precision != 0)
+		{
+			if (pack->precision < ft_strlen(pack->s))
+			{
+				while (++cont < pack->precision)
+				{
+					write(1, &pack->s[cont], 1);
+					pack->size++;
+				}
+			}
+			else
+			{
+				while (pack->s[++cont])
+				{
+					write(1, &pack->s[cont], 1);
+					pack->size++;
+				}
+			}
+		}
+	}
+	else
+	{
+		while (pack->s[++cont])
+		{
+			write(1, &pack->s[cont], 1);
+			pack->size++;
+		}
+	}
 }
 
 void	ft_write(t_printf *pack, const char *format)
@@ -112,7 +170,9 @@ void	ft_write(t_printf *pack, const char *format)
 		if (pack->format[pack->posi] == '%')
 		{
 			pack->posi++;
-			ft_flags(pack);	
+			ft_init(pack);
+			//poner un if para que solo entre cuando lo siguiente no es una letra.
+			ft_flags(pack);
 		}
 		else
 		{
@@ -121,8 +181,10 @@ void	ft_write(t_printf *pack, const char *format)
 		}
 		if (pack->format[pack->posi] == 'c')
 			ft_char(pack);
-		if (pack->format[pack->posi] == 'd')
+		else if (pack->format[pack->posi] == 'd')
 			ft_int(pack);
+		else if (pack->format[pack->posi] == 's')
+			ft_istring(pack);
 		pack->posi++;
 	}
 }
@@ -133,7 +195,9 @@ int		ft_printf(const char *format, ...)
 
 	if (!(pack = malloc(sizeof(t_printf))))
 		return (-1);
-	ft_init(pack, format);
+	pack->format = format;
+	pack->size = 0;
+	pack->posi = 0;
 	va_start(pack->arg, format);
 	ft_write(pack, format);
 	return (pack->size);
@@ -141,7 +205,7 @@ int		ft_printf(const char *format, ...)
 
 int		main()
 {
-	printf("%d\n", ft_printf("hello %06d %d", 15, -13));
-	printf("%d\n", printf("hello %06d %d", 15, -13));
+	printf("%d\n", ft_printf("hello %.7s", "aloalo"));
+	printf("%d\n", printf("hello %.7s", "aloalo"));
 	return (0);
 }
