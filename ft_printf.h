@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/10 17:19:59 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/12 12:59:54 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,6 @@ int			ft_atoi(const char *str);
 int			ft_isdigit(int c);
 int			ft_isalpha(int c);
 int			ft_strlen(const char *s);
+char		*ft_substr(char const *s, unsigned int start, size_t len);
+char		*ft_strdup(char *s1);
 #endif
