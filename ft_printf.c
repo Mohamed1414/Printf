@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/12 13:11:06 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/12 17:35:04 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	ft_printhings(t_printf *pack, int len, char c)
 {
 	int		j;
 	j = pack->width - len;
+	//gestionar cuando la precision esta activada en los ints
 	while (j > 0)
 	{
 		write(1, &c, 1);
@@ -72,8 +73,45 @@ void	ft_int(t_printf *pack)
 	pack->d = ft_itoa((int)arg);
 	len = ft_strlen(pack->d);
 	if (pack->zero == 1)
+	{
 		if (pack->width > ft_strlen(pack->d))//meter los ceros hasta completar el ancho
 			ft_printhings(pack, len, '0');
+	}
+	else if (pack->minus == 1)
+	{
+		if (pack->width > len)
+		{
+			while (pack->d[cont] != '\0')
+			{
+				write(1, &pack->d[cont], 1);
+				cont++;
+				pack->size++;
+				ft_printhings(pack, len, ' ');
+			}
+		}
+		else
+		{
+			while (pack->d[cont] != '\0')
+			{
+				write(1, &pack->d[cont], 1);
+				cont++;
+				pack->size++;
+			}
+		}
+	}
+	else if (pack->dot == 1)
+	{
+		if (pack->precision > len)
+		{
+			ft_printhings(pack, len, '0');
+			while (pack->d[cont] != '\0')
+			{
+				write(1, &pack->d[cont], 1);
+				cont++;
+				pack->size++;
+			}
+		}
+	}
 	while (pack->d[cont] != '\0')
 	{
 		write(1, &pack->d[cont], 1);
@@ -176,7 +214,7 @@ void	ft_write(t_printf *pack)
 		}
 		if (pack->format[pack->posi] == 'c')
 			ft_char(pack);
-		else if (pack->format[pack->posi] == 'd')
+		else if (pack->format[pack->posi] == 'd' || pack->format[pack->posi] == 'i')
 			ft_int(pack);
 		else if (pack->format[pack->posi] == 's')
 			ft_istring(pack);
@@ -200,7 +238,7 @@ int		ft_printf(const char *format, ...)
 
 int		main()
 {
-	printf("%d\n", ft_printf("hello %10.2s", "aloalo"));
-	printf("%d\n", printf("hello %10.2s", "aloalo"));
+	printf("%d\n", ft_printf("hello %111.1s %.5d", "aloalo", 3));
+	printf("%d\n", printf("hello %111.1s %.5d", "aloalo", 3));
 	return (0);
 }
