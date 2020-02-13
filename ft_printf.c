@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/12 17:35:04 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/13 19:34:18 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,19 @@ void	ft_printhings(t_printf *pack, int len, char c)
 	}
 }
 
+void ft_printhingstwo(t_printf *pack, int len, char c)
+{
+	int		j;
+
+	j = pack->precision - len;
+	while (j > 0)
+	{
+		write(1, &c, 1);
+		j--;
+		pack->size++;
+	}
+}
+
 void	ft_int(t_printf *pack)
 {
 	void	*arg;
@@ -72,9 +85,9 @@ void	ft_int(t_printf *pack)
 	arg = va_arg(pack->arg, void *);
 	pack->d = ft_itoa((int)arg);
 	len = ft_strlen(pack->d);
-	if (pack->zero == 1)
+	if (pack->zero == 1 && pack->dot == 0)
 	{
-		if (pack->width > ft_strlen(pack->d))//meter los ceros hasta completar el ancho
+		if (pack->width > ft_strlen(pack->d))
 			ft_printhings(pack, len, '0');
 	}
 	else if (pack->minus == 1)
@@ -103,7 +116,21 @@ void	ft_int(t_printf *pack)
 	{
 		if (pack->precision > len)
 		{
-			ft_printhings(pack, len, '0');
+			if (pack->width != 0)
+			{
+				ft_printhings(pack, pack->precision, ' ');
+			}
+			ft_printhingstwo(pack, len, '0');
+			while (pack->d[cont] != '\0')
+			{
+				write(1, &pack->d[cont], 1);
+				cont++;
+				pack->size++;
+			}
+		}
+		else if (pack->width != 0)
+		{
+			ft_printhings(pack, len, ' ');
 			while (pack->d[cont] != '\0')
 			{
 				write(1, &pack->d[cont], 1);
@@ -112,13 +139,18 @@ void	ft_int(t_printf *pack)
 			}
 		}
 	}
-	while (pack->d[cont] != '\0')
+	else if (pack->width > len && pack->dot == 0)
 	{
-		write(1, &pack->d[cont], 1);
-		cont++;
-		pack->size++;
+		ft_printhings(pack, len, ' ');
+		while (pack->d[cont] != '\0')
+		{
+			write(1, &pack->d[cont], 1);
+			cont++;
+			pack->size++;
+		}
 	}
 }
+
 void	ft_init(t_printf *pack)
 {
 	pack->zero = 0;
@@ -238,7 +270,7 @@ int		ft_printf(const char *format, ...)
 
 int		main()
 {
-	printf("%d\n", ft_printf("hello %111.1s %.5d", "aloalo", 3));
-	printf("%d\n", printf("hello %111.1s %.5d", "aloalo", 3));
+	printf("%d\n", ft_printf("hello %111.1s %6.d", "aloalo", 3));
+	printf("%d\n", printf("hello %111.1s %6.d", "aloalo", 3));
 	return (0);
 }
