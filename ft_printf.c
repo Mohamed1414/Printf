@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/13 19:34:18 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/21 16:49:42 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,12 @@ void	ft_int(t_printf *pack)
 	{
 		if (pack->width > ft_strlen(pack->d))
 			ft_printhings(pack, len, '0');
+		while (pack->d[cont])
+		{
+			write(1, &pack->d[cont], 1);
+			cont++;
+			pack->size++;
+		}
 	}
 	else if (pack->minus == 1)
 	{
@@ -99,8 +105,8 @@ void	ft_int(t_printf *pack)
 				write(1, &pack->d[cont], 1);
 				cont++;
 				pack->size++;
-				ft_printhings(pack, len, ' ');
 			}
+			ft_printhings(pack, len, ' ');
 		}
 		else
 		{
@@ -128,9 +134,18 @@ void	ft_int(t_printf *pack)
 				pack->size++;
 			}
 		}
-		else if (pack->width != 0)
+		else if (pack->width > len)
 		{
 			ft_printhings(pack, len, ' ');
+			while (pack->d[cont] != '\0')
+			{
+				write(1, &pack->d[cont], 1);
+				cont++;
+				pack->size++;
+			}
+		}
+		else
+		{
 			while (pack->d[cont] != '\0')
 			{
 				write(1, &pack->d[cont], 1);
@@ -149,8 +164,56 @@ void	ft_int(t_printf *pack)
 			pack->size++;
 		}
 	}
+	else
+	{
+		while (pack->d[cont] != '\0')
+		{
+			write(1, &pack->d[cont], 1);
+			cont++;
+			pack->size++;
+		}
+	}
 }
 
+char	*ft_hexoa(unsigned long int arg)
+{
+	char					*num;
+	int						len;
+	unsigned long int		b;
+
+	len = 2;
+	b = arg;
+	while (b /= 16)
+		len++;
+	if (!(num = (char *)malloc (sizeof(char) * len)))
+		return (0);
+	num[--len] = '\0';
+	while (len--)
+	{
+		if ((arg % 16) < 10)
+			num[len] = (arg % 16) + '0';
+		else
+			num[len] = (arg % 16) + 'W';
+		arg = arg / 16;
+	}
+	return (num);
+}
+
+void	ft_hexamin(t_printf *pack)
+{
+	void	*arg;
+	int		cont;
+
+	cont = 0;
+	arg = va_arg(pack->arg, void *);
+	pack->x = ft_hexoa((unsigned int)arg);
+	while (pack->x[cont])
+	{
+		write(1, &pack->x[cont], 1);
+		cont++;
+		pack->size++;
+	}
+}
 void	ft_init(t_printf *pack)
 {
 	pack->zero = 0;
@@ -180,6 +243,11 @@ void	ft_char(t_printf *pack)
 		write(1, &pack->c, 1);
 		pack->size++;
 	}
+	else
+	{
+		write(1, &pack->c, 1);
+		pack->size++;
+	}
 }
 void	ft_istring(t_printf *pack)
 {
@@ -187,13 +255,64 @@ void	ft_istring(t_printf *pack)
 
 	cont = -1;
 	pack->s = (char *)va_arg(pack->arg, void *);
+	if (!pack->s)
+		pack->s = "(null)";
 	if (pack->dot == 1)
 	{
 		if (pack->precision != 0)
 		{
 			if (pack->precision < ft_strlen(pack->s))
 			{
-				pack->s = ft_substr(pack->s, cont + 1, pack->precision);
+				if (pack->width > pack->precision)
+				{
+					if (pack->minus == 1)
+					{
+						while (++cont < pack->precision)
+						{
+							write(1, &pack->s[cont], 1);
+							pack->size++;
+						}
+						ft_printhings(pack, pack->precision, ' ');
+					}
+					else
+					{
+						ft_printhings(pack, pack->precision, ' ');
+						while (++cont < pack->precision)
+						{
+							write(1, &pack->s[cont], 1);
+							pack->size++;
+						}
+					}
+				}
+				else
+				{
+					while (++cont < pack->precision)
+					{
+						write(1, &pack->s[cont], 1);
+						pack->size++;
+					}
+				}
+			}
+			else if (pack->width >= pack->precision)
+			{
+				if (pack->minus == 1)
+				{
+					while (pack->s[++cont])
+					{
+						write(1, &pack->s[cont], 1);
+						pack->size++;
+					}
+					ft_printhings(pack, ft_strlen(pack->s), ' ');
+				}
+				else
+				{
+					ft_printhings(pack, ft_strlen(pack->s), ' ');
+					while (pack->s[++cont])
+					{
+						write(1, &pack->s[cont], 1);
+						pack->size++;
+					}
+				}
 			}
 			else
 			{
@@ -205,7 +324,7 @@ void	ft_istring(t_printf *pack)
 			}
 		}
 	}
-	if (pack->width != 0)
+	if (pack->width != 0 && pack->dot == 0)
 	{
 		if (pack->minus == 1)
 		{
@@ -226,8 +345,71 @@ void	ft_istring(t_printf *pack)
 			}
 		}
 	}
+	else if (pack->dot == 0)
+	{
+		while (pack->s[++cont])
+		{
+			write(1, &pack->s[cont], 1);
+			pack->size++;
+		}
+	}
 }
 
+void	ft_pointer(t_printf *pack)
+{
+	void	*arg;
+	int		cont;
+
+	cont = 0;
+	arg = va_arg(pack->arg, void *);
+	pack->p = ft_hexoa((unsigned long int)arg);
+	if (pack->minus == 1)
+	{
+		write(1, "0x", 2);
+		pack->size += 2;
+		while (pack->p[cont])
+		{
+			write(1, &pack->p[cont], 1);
+			cont++;
+			pack->size++;
+		}
+		ft_printhings(pack, ft_strlen(pack->p) + 2, ' ');
+	}
+	else if (pack->width > ft_strlen(pack->p))
+	{
+		if (arg == NULL && pack->dot == 1)
+			ft_printhings(pack, ft_strlen(pack->p) + 1, ' ');
+		else
+			ft_printhings(pack, ft_strlen(pack->p) + 2, ' ');
+		write(1, "0x", 2);
+		pack->size += 2;
+		if (arg != NULL || pack->dot == 0)
+		{
+			while (pack->p[cont])
+			{
+				write(1, &pack->p[cont], 1);
+				cont++;
+				pack->size++;
+			}
+		}
+	}
+	else if (arg == NULL && pack->dot == 1)
+	{
+		write(1, "0x", 2);
+		pack->size += 2;
+	}
+	else
+	{
+		write(1, "0x", 2);
+		pack->size += 2;
+		while (pack->p[cont])
+		{
+			write(1, &pack->p[cont], 1);
+			cont++;
+			pack->size++;
+		}
+	}
+}
 void	ft_write(t_printf *pack)
 {
 	while (pack->format[pack->posi])
@@ -238,18 +420,23 @@ void	ft_write(t_printf *pack)
 			ft_init(pack);
 			while (ft_isalpha(pack->format[pack->posi]) != 1)
 				ft_flags(pack);
+
+			if (pack->format[pack->posi] == 'c')
+				ft_char(pack);
+			else if (pack->format[pack->posi] == 'd' || pack->format[pack->posi] == 'i')
+				ft_int(pack);
+			else if (pack->format[pack->posi] == 's')
+				ft_istring(pack);
+			else if (pack->format[pack->posi] == 'x')
+				ft_hexamin(pack);
+			else if (pack->format[pack->posi] == 'p')
+				ft_pointer(pack);
 		}
 		else
 		{
 			write(1, &pack->format[pack->posi], 1);
 			pack->size++;
 		}
-		if (pack->format[pack->posi] == 'c')
-			ft_char(pack);
-		else if (pack->format[pack->posi] == 'd' || pack->format[pack->posi] == 'i')
-			ft_int(pack);
-		else if (pack->format[pack->posi] == 's')
-			ft_istring(pack);
 		pack->posi++;
 	}
 }
@@ -267,10 +454,11 @@ int		ft_printf(const char *format, ...)
 	ft_write(pack);
 	return (pack->size);
 }
-
+/*
 int		main()
 {
-	printf("%d\n", ft_printf("hello %111.1s %6.d", "aloalo", 3));
-	printf("%d\n", printf("hello %111.1s %6.d", "aloalo", 3));
+	printf("%d\n", ft_printf("%7.7s", "yolos"));
+	printf("%d\n", printf("%7.7s", "yolos"));
 	return (0);
 }
+*/
