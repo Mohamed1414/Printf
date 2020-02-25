@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/24 18:50:11 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/25 16:09:10 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,8 @@ int			ft_strlen(const char *s);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 char		*ft_strdup(char *s1);
 int			ft_printf(const char *format, ...);
+void		ft_printhings(t_printf *pack, int len, char c);
+void 		ft_printhingstwo(t_printf *pack, int len, char c);
+void		ft_hexa(t_printf *pack);
+char		*ft_hexoa(unsigned long int arg);
 #endif

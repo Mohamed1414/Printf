@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/21 16:49:42 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/25 19:54:59 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,14 @@ void	ft_flags(t_printf *pack)
 		pack->minus = 1;
 	if (pack->format[pack->posi] == '*' && pack->posi++)
 		pack->aster = 1;
+	if (ft_isdigit(pack->format[pack->posi]) == 1)
+	{
+		pack->width = ft_atoi(&pack->format[pack->posi]); //guardando el ancho
+		while (ft_isdigit(pack->format[pack->posi]) == 1)
+			pack->posi++;
+	}
+	else if (pack->aster == 1)
+		pack->width = va_arg(pack->arg, int);
 	if (pack->format[pack->posi] == '.' && pack->posi++)
 	{
 		pack->dot = 1;
@@ -37,17 +45,14 @@ void	ft_flags(t_printf *pack)
 			pack->posi++;
 		}
 	}
-	if (ft_isdigit(pack->format[pack->posi]) == 1)
+	/*if (ft_isdigit(pack->format[pack->posi]) == 1)
 	{
 		pack->width = ft_atoi(&pack->format[pack->posi]); //guardando el ancho
 		while (ft_isdigit(pack->format[pack->posi]) == 1)
 			pack->posi++;
 	}
 	else if (pack->aster == 1)
-	{
-		pack->width = va_arg(pack->arg, int); // cogiendo el ancho como argumento cuando se encuentra el '*'
-		pack->posi++;
-	}
+		pack->width = va_arg(pack->arg, int);*/
 }
 void	ft_printhings(t_printf *pack, int len, char c)
 {
@@ -87,7 +92,7 @@ void	ft_int(t_printf *pack)
 	len = ft_strlen(pack->d);
 	if (pack->zero == 1 && pack->dot == 0)
 	{
-		if (pack->width > ft_strlen(pack->d))
+		if (pack->width > len)
 			ft_printhings(pack, len, '0');
 		while (pack->d[cont])
 		{
@@ -175,7 +180,7 @@ void	ft_int(t_printf *pack)
 	}
 }
 
-char	*ft_hexoa(unsigned long int arg)
+char	*ft_hexoamay(unsigned long int arg)
 {
 	char					*num;
 	int						len;
@@ -193,20 +198,20 @@ char	*ft_hexoa(unsigned long int arg)
 		if ((arg % 16) < 10)
 			num[len] = (arg % 16) + '0';
 		else
-			num[len] = (arg % 16) + 'W';
+			num[len] = (arg % 16) + '7';
 		arg = arg / 16;
 	}
 	return (num);
 }
 
-void	ft_hexamin(t_printf *pack)
+void	ft_hexamay(t_printf *pack)
 {
 	void	*arg;
 	int		cont;
 
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
-	pack->x = ft_hexoa((unsigned int)arg);
+	pack->x = ft_hexoamay((unsigned int)arg);
 	while (pack->x[cont])
 	{
 		write(1, &pack->x[cont], 1);
@@ -222,6 +227,9 @@ void	ft_init(t_printf *pack)
 	pack->aster = 0;
 	pack->c = 0;
 	pack->d = 0;
+	pack->s = 0;
+	pack->x = 0;
+	pack->p = 0;
 	pack->precision = 0;
 	pack->width = 0;
 }
@@ -418,9 +426,8 @@ void	ft_write(t_printf *pack)
 		{
 			pack->posi++;
 			ft_init(pack);
-			while (ft_isalpha(pack->format[pack->posi]) != 1)
+			if (ft_isalpha(pack->format[pack->posi]) != 1)
 				ft_flags(pack);
-
 			if (pack->format[pack->posi] == 'c')
 				ft_char(pack);
 			else if (pack->format[pack->posi] == 'd' || pack->format[pack->posi] == 'i')
@@ -428,7 +435,9 @@ void	ft_write(t_printf *pack)
 			else if (pack->format[pack->posi] == 's')
 				ft_istring(pack);
 			else if (pack->format[pack->posi] == 'x')
-				ft_hexamin(pack);
+				ft_hexa(pack);
+			else if (pack->format[pack->posi] == 'X')
+				ft_hexamay(pack);
 			else if (pack->format[pack->posi] == 'p')
 				ft_pointer(pack);
 		}
@@ -454,11 +463,10 @@ int		ft_printf(const char *format, ...)
 	ft_write(pack);
 	return (pack->size);
 }
-/*
+
 int		main()
 {
-	printf("%d\n", ft_printf("%7.7s", "yolos"));
-	printf("%d\n", printf("%7.7s", "yolos"));
+	printf("%d\n", ft_printf("%-*s", -32, "abc"));
+	printf("%d\n", printf("%-*s", -32, "abc"));
 	return (0);
 }
-*/
