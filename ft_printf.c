@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/25 19:54:59 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/26 19:47:31 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,6 +440,8 @@ void	ft_write(t_printf *pack)
 				ft_hexamay(pack);
 			else if (pack->format[pack->posi] == 'p')
 				ft_pointer(pack);
+			else if (pack->format[pack->posi] == 'u')
+				ft_unsigned(pack);
 		}
 		else
 		{
@@ -463,10 +465,11 @@ int		ft_printf(const char *format, ...)
 	ft_write(pack);
 	return (pack->size);
 }
-
+/*
 int		main()
 {
-	printf("%d\n", ft_printf("%-*s", -32, "abc"));
-	printf("%d\n", printf("%-*s", -32, "abc"));
+	printf("%d\n", ft_printf("%8.3u", 8375));
+	printf("%d\n", printf("%8.3u", 8375));
 	return (0);
 }
+*/

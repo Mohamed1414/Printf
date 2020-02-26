@@ -1,43 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_hexa.c                                          :+:      :+:    :+:   */
+/*   ft_unsigned.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/20 17:59:43 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/26 17:59:53 by mbahstou         ###   ########.fr       */
+/*   Created: 2020/02/26 18:01:51 by mbahstou          #+#    #+#             */
+/*   Updated: 2020/02/26 19:47:09 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <stdio.h>
 
-char	*ft_hexoa(unsigned long int arg)
-{
-	char					*num;
-	int						len;
-	unsigned long int		b;
-
-	len = 2;
-	b = arg;
-	while (b /= 16)
-		len++;
-	if (!(num = (char *)malloc (sizeof(char) * len)))
-		return (0);
-	num[--len] = '\0';
-	while (len--)
-	{
-		if ((arg % 16) < 10)
-			num[len] = (arg % 16) + '0';
-		else
-			num[len] = (arg % 16) + 'W';
-		arg = arg / 16;
-	}
-	return (num);
-}
-
-void	ft_hexa(t_printf *pack)
+void	ft_unsigned(t_printf *pack)
 {
 	void	*arg;
 	int		cont;
@@ -45,15 +21,15 @@ void	ft_hexa(t_printf *pack)
 
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
-	pack->x = ft_hexoa((unsigned int)arg);
-	len = ft_strlen(pack->x);
+	pack->u = ft_itoa((unsigned int)arg);
+	len = ft_strlen(pack->u);
 	if (pack->zero == 1 && pack->dot == 0)
 	{
 		if (pack->width > len)
 			ft_printhings(pack, len, '0');
-		while (pack->x[cont])
+		while (pack->u[cont])
 		{
-			write(1, &pack->x[cont], 1);
+			write(1, &pack->u[cont], 1);
 			cont++;
 			pack->size++;
 		}
@@ -62,36 +38,38 @@ void	ft_hexa(t_printf *pack)
 	{
 		if (pack->dot == 1)
 		{
-			if (pack->width < pack->precision)
+			if (pack->width > pack->precision)
 			{
 				ft_printhingstwo(pack, len, '0');
-				while (pack->x[cont] != '\0')
-				{
-					write(1, &pack->x[cont], 1);
-					cont++;
-					pack->size++;
-				}
-			}
-			else if (pack->precision < pack->width)
-			{
-				ft_printhingstwo(pack, len, '0');
-				while (pack->x[cont] != '\0')
-				{
-					write(1, &pack->x[cont], 1);
-					cont++;
-					pack->size++;
-				}
-				if (len < pack->precision)
+				if (pack->u[cont] == '0')
 					ft_printhings(pack, pack->precision, ' ');
 				else
-					ft_printhings(pack, len, ' ');
+				{
+					while (pack->u[cont] != '\0')
+					{
+						write(1, &pack->u[cont], 1);
+						cont++;
+						pack->size++;
+					}
+					ft_printhings(pack, pack->precision, ' ');
+				}
+			}
+			else
+			{
+				ft_printhingstwo(pack, len, '0');
+				while (pack->u[cont] != '\0')
+				{
+					write(1, &pack->u[cont], 1);
+					cont++;
+					pack->size++;
+				}
 			}
 		}
-		if (pack->width > len && pack->dot == 0)
+		else if (pack->width > len)
 		{
-			while (pack->x[cont] != '\0')
+			while (pack->u[cont] != '\0')
 			{
-				write(1, &pack->x[cont], 1);
+				write(1, &pack->u[cont], 1);
 				cont++;
 				pack->size++;
 			}
@@ -99,9 +77,9 @@ void	ft_hexa(t_printf *pack)
 		}
 		else
 		{
-			while (pack->x[cont] != '\0')
+			while (pack->u[cont] != '\0')
 			{
-				write(1, &pack->x[cont], 1);
+				write(1, &pack->u[cont], 1);
 				cont++;
 				pack->size++;
 			}
@@ -112,34 +90,44 @@ void	ft_hexa(t_printf *pack)
 		if (pack->precision > len)
 		{
 			if (pack->width != 0)
-				ft_printhings(pack, pack->precision, ' ');
-			ft_printhingstwo(pack, len, '0');
-			while (pack->x[cont] != '\0')
 			{
-				write(1, &pack->x[cont], 1);
+				ft_printhings(pack, pack->precision, ' ');
+			}
+			ft_printhingstwo(pack, len, '0');
+			while (pack->u[cont] != '\0')
+			{
+				write(1, &pack->u[cont], 1);
 				cont++;
 				pack->size++;
 			}
 		}
-		else if (pack->width > len)
+		else if (pack->width > pack->precision)
 		{
-			ft_printhings(pack, len, ' ');
-			while (pack->x[cont] != '\0')
+			if (pack->precision < len)
+				ft_printhings(pack, len, ' ');
+			else
+				ft_printhings(pack, pack->precision, ' ');
+			if (pack->u[cont] == '0')
+				return ;
+			else
 			{
-				write(1, &pack->x[cont], 1);
-				cont++;
-				pack->size++;
+				while (pack->u[cont] != '\0')
+				{
+					write(1, &pack->u[cont], 1);
+					cont++;
+					pack->size++;
+				}
 			}
 		}
 		else
 		{
-			if (pack->x[cont] == '0')
+			if (pack->u[cont] == '0')
 				return ;
 			else
 			{
-				while (pack->x[cont] != '\0')
+				while (pack->u[cont] != '\0')
 				{
-					write(1, &pack->x[cont], 1);
+					write(1, &pack->u[cont], 1);
 					cont++;
 					pack->size++;
 				}
@@ -149,18 +137,18 @@ void	ft_hexa(t_printf *pack)
 	else if (pack->width > len && pack->dot == 0)
 	{
 		ft_printhings(pack, len, ' ');
-		while (pack->x[cont] != '\0')
+		while (pack->u[cont] != '\0')
 		{
-			write(1, &pack->x[cont], 1);
+			write(1, &pack->u[cont], 1);
 			cont++;
 			pack->size++;
 		}
 	}
 	else
 	{
-		while (pack->x[cont])
+		while (pack->u[cont] != '\0')
 		{
-			write(1, &pack->x[cont], 1);
+			write(1, &pack->u[cont], 1);
 			cont++;
 			pack->size++;
 		}

@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/25 16:09:10 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/26 19:17:55 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,9 @@ typedef struct s_printf {
 	int		aster;
 	char	*x;
 	char 	*p;
+	char	*u;
 } t_printf;
-char		*ft_itoa(int n);
+char		*ft_itoa(long long int n);
 int			ft_atoi(const char *str);
 int			ft_isdigit(int c);
 int			ft_isalpha(int c);
@@ -45,4 +46,5 @@ void		ft_printhings(t_printf *pack, int len, char c);
 void 		ft_printhingstwo(t_printf *pack, int len, char c);
 void		ft_hexa(t_printf *pack);
 char		*ft_hexoa(unsigned long int arg);
+void		ft_unsigned(t_printf *pack);
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/04 17:47:49 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/14 12:40:01 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/26 19:18:29 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int				ft_atoi(const char *str)
 	return (sign > 1 ? 0 : a * n);
 }
 
-static int		negative(long int *n, int *i)
+static int		negative(unsigned long int *n, int *i)
 {
 	int cont;
 
@@ -62,13 +62,13 @@ static int		negative(long int *n, int *i)
 	return (cont);
 }
 
-char			*ft_itoa(int n)
+char			*ft_itoa(long long int n)
 {
-	int				i;
-	char			*p;
-	int				cont;
-	long int		num;
-	long int		num2;
+	int						i;
+	char					*p;
+	int						cont;
+	unsigned long int		num;
+	unsigned long int				num2;
 
 	i = 2;
 	num = n;
