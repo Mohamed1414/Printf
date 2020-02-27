@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/29 15:21:25 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/26 19:17:55 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/27 16:48:59 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,5 @@ void 		ft_printhingstwo(t_printf *pack, int len, char c);
 void		ft_hexa(t_printf *pack);
 char		*ft_hexoa(unsigned long int arg);
 void		ft_unsigned(t_printf *pack);
+void		ft_int(t_printf *pack);
 #endif

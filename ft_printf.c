@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/26 19:47:31 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/27 17:52:58 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,6 @@ void	ft_flags(t_printf *pack)
 			pack->posi++;
 		}
 	}
-	/*if (ft_isdigit(pack->format[pack->posi]) == 1)
-	{
-		pack->width = ft_atoi(&pack->format[pack->posi]); //guardando el ancho
-		while (ft_isdigit(pack->format[pack->posi]) == 1)
-			pack->posi++;
-	}
-	else if (pack->aster == 1)
-		pack->width = va_arg(pack->arg, int);*/
 }
 void	ft_printhings(t_printf *pack, int len, char c)
 {
@@ -79,7 +71,7 @@ void ft_printhingstwo(t_printf *pack, int len, char c)
 		pack->size++;
 	}
 }
-
+/*
 void	ft_int(t_printf *pack)
 {
 	void	*arg;
@@ -178,7 +170,7 @@ void	ft_int(t_printf *pack)
 			pack->size++;
 		}
 	}
-}
+}*/
 
 char	*ft_hexoamay(unsigned long int arg)
 {
@@ -465,11 +457,10 @@ int		ft_printf(const char *format, ...)
 	ft_write(pack);
 	return (pack->size);
 }
-/*
+
 int		main()
 {
-	printf("%d\n", ft_printf("%8.3u", 8375));
-	printf("%d\n", printf("%8.3u", 8375));
+	printf("%d\n", ft_printf("%10.5i", -216));
+	printf("%d\n", printf("%10.5i", -216));
 	return (0);
 }
-*/
