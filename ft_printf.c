@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/28 13:44:05 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/28 17:46:18 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,146 +71,7 @@ void ft_printhingstwo(t_printf *pack, int len, char c)
 		pack->size++;
 	}
 }
-/*
-void	ft_int(t_printf *pack)
-{
-	void	*arg;
-	int		cont;
-	int		len;
 
-	cont = 0;
-	arg = va_arg(pack->arg, void *);
-	pack->d = ft_itoa((int)arg);
-	len = ft_strlen(pack->d);
-	if (pack->zero == 1 && pack->dot == 0)
-	{
-		if (pack->width > len)
-			ft_printhings(pack, len, '0');
-		while (pack->d[cont])
-		{
-			write(1, &pack->d[cont], 1);
-			cont++;
-			pack->size++;
-		}
-	}
-	else if (pack->minus == 1)
-	{
-		if (pack->width > len)
-		{
-			while (pack->d[cont] != '\0')
-			{
-				write(1, &pack->d[cont], 1);
-				cont++;
-				pack->size++;
-			}
-			ft_printhings(pack, len, ' ');
-		}
-		else
-		{
-			while (pack->d[cont] != '\0')
-			{
-				write(1, &pack->d[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-	}
-	else if (pack->dot == 1)
-	{
-		if (pack->precision > len)
-		{
-			if (pack->width != 0)
-			{
-				ft_printhings(pack, pack->precision, ' ');
-			}
-			ft_printhingstwo(pack, len, '0');
-			while (pack->d[cont] != '\0')
-			{
-				write(1, &pack->d[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-		else if (pack->width > len)
-		{
-			ft_printhings(pack, len, ' ');
-			while (pack->d[cont] != '\0')
-			{
-				write(1, &pack->d[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-		else
-		{
-			while (pack->d[cont] != '\0')
-			{
-				write(1, &pack->d[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-	}
-	else if (pack->width > len && pack->dot == 0)
-	{
-		ft_printhings(pack, len, ' ');
-		while (pack->d[cont] != '\0')
-		{
-			write(1, &pack->d[cont], 1);
-			cont++;
-			pack->size++;
-		}
-	}
-	else
-	{
-		while (pack->d[cont] != '\0')
-		{
-			write(1, &pack->d[cont], 1);
-			cont++;
-			pack->size++;
-		}
-	}
-}*/
-
-char	*ft_hexoamay(unsigned long int arg)
-{
-	char					*num;
-	int						len;
-	unsigned long int		b;
-
-	len = 2;
-	b = arg;
-	while (b /= 16)
-		len++;
-	if (!(num = (char *)malloc (sizeof(char) * len)))
-		return (0);
-	num[--len] = '\0';
-	while (len--)
-	{
-		if ((arg % 16) < 10)
-			num[len] = (arg % 16) + '0';
-		else
-			num[len] = (arg % 16) + '7';
-		arg = arg / 16;
-	}
-	return (num);
-}
-
-void	ft_hexamay(t_printf *pack)
-{
-	void	*arg;
-	int		cont;
-
-	cont = 0;
-	arg = va_arg(pack->arg, void *);
-	pack->x = ft_hexoamay((unsigned int)arg);
-	while (pack->x[cont])
-	{
-		write(1, &pack->x[cont], 1);
-		cont++;
-		pack->size++;
-	}
-}
 void	ft_init(t_printf *pack)
 {
 	pack->zero = 0;
@@ -229,8 +90,13 @@ void	ft_init(t_printf *pack)
 void	ft_char(t_printf *pack)
 {
 	void	*arg;
-	arg = va_arg(pack->arg, void *);
-	pack->c = (char)arg;
+	if (pack->format[pack->posi] == '%')
+		pack->c = '%';
+	else
+	{
+		arg = va_arg(pack->arg, void *);
+		pack->c = (char)arg;
+	}
 	if (pack->minus == 1)
 	{
 		write(1, &pack->c, 1);
@@ -249,6 +115,7 @@ void	ft_char(t_printf *pack)
 		pack->size++;
 	}
 }
+
 void	ft_istring(t_printf *pack)
 {
 	int		cont;
@@ -314,6 +181,15 @@ void	ft_istring(t_printf *pack)
 					}
 				}
 			}
+			else if (pack->precision > pack->width && ft_strlen(pack->s) == 0)
+			{
+				ft_printhings(pack, 0, ' ');
+				while (pack->s[++cont])
+				{
+					write(1, &pack->s[cont], 1);
+					pack->size++;
+				}
+			}
 			else
 			{
 				while (pack->s[++cont])
@@ -323,6 +199,8 @@ void	ft_istring(t_printf *pack)
 				}
 			}
 		}
+		else
+			ft_printhings(pack, 0, ' ');
 	}
 	if (pack->width != 0 && pack->dot == 0)
 	{
@@ -422,6 +300,8 @@ void	ft_write(t_printf *pack)
 				ft_flags(pack);
 			if (pack->format[pack->posi] == 'c')
 				ft_char(pack);
+			else if (pack->format[pack->posi] == '%')
+				ft_percentage(pack);
 			else if (pack->format[pack->posi] == 'd' || pack->format[pack->posi] == 'i')
 				ft_int(pack);
 			else if (pack->format[pack->posi] == 's')
@@ -434,6 +314,8 @@ void	ft_write(t_printf *pack)
 				ft_pointer(pack);
 			else if (pack->format[pack->posi] == 'u')
 				ft_unsigned(pack);
+			else
+				return ;
 		}
 		else
 		{
@@ -460,8 +342,8 @@ int		ft_printf(const char *format, ...)
 /*
 int		main()
 {
-	printf("%d\n", ft_printf("%0-10.5i", -216));
-//	printf("%d\n", printf("%0-10.5i", -216));
+	printf("%d\n", ft_printf("%"));
+//	printf("%d\n", printf("%"));
 	return (0);
 }
 */

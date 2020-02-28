@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_hexa.c                                          :+:      :+:    :+:   */
+/*   ft_hexamay.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/20 17:59:43 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/28 15:41:07 by mbahstou         ###   ########.fr       */
+/*   Created: 2020/02/28 15:07:09 by mbahstou          #+#    #+#             */
+/*   Updated: 2020/02/28 15:42:43 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <stdio.h>
 
-char	*ft_hexoa(unsigned long int arg)
+char	*ft_hexoamay(unsigned long int arg)
 {
 	char					*num;
 	int						len;
@@ -31,13 +31,14 @@ char	*ft_hexoa(unsigned long int arg)
 		if ((arg % 16) < 10)
 			num[len] = (arg % 16) + '0';
 		else
-			num[len] = (arg % 16) + 'W';
+			num[len] = (arg % 16) + '7';
 		arg = arg / 16;
 	}
 	return (num);
 }
 
-void	ft_hexa(t_printf *pack)
+
+void	ft_hexamay(t_printf *pack)
 {
 	void	*arg;
 	int		cont;
@@ -45,7 +46,7 @@ void	ft_hexa(t_printf *pack)
 
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
-	pack->x = ft_hexoa((unsigned int)arg);
+	pack->x = ft_hexoamay((unsigned int)arg);
 	len = ft_strlen(pack->x);
 	if (pack->zero == 1 && pack->dot == 0)
 	{
