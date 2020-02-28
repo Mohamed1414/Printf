@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 16:38:18 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/27 17:55:29 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/28 13:43:14 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ void	ft_int(t_printf *pack)
 		{
 			if (pack->width > pack->precision)
 			{
+				if (pack->d[cont] == '-')
+				{
+					write(1, &pack->d[cont], 1);
+					pack->size++;
+					cont++;
+					pack->precision++;
+				}
 				if (pack->d[cont] == '0')
 					ft_printhingstwo(pack, 0, '0');
 				else
@@ -68,6 +75,13 @@ void	ft_int(t_printf *pack)
 			}
 			else
 			{
+				if (pack->d[cont] == '-')
+				{
+					write(1, &pack->d[cont], 1);
+					len--;
+					pack->size++;
+					cont++;
+				}
 				ft_printhingstwo(pack, len, '0');
 				while (pack->d[cont] != '\0')
 				{
@@ -103,7 +117,10 @@ void	ft_int(t_printf *pack)
 		{
 			if (pack->width != 0)
 			{
-				ft_printhings(pack, pack->precision, ' ');
+				if (pack->d[cont] == '-')
+					ft_printhings(pack, pack->precision + 1, ' ');
+				else
+					ft_printhings(pack, pack->precision, ' ');
 				if (pack->d[cont] == '-')
 				{
 					write(1, &pack->d[cont], 1);

@@ -6,7 +6,7 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/22 16:50:45 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/27 17:52:58 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/02/28 13:44:05 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,10 +457,11 @@ int		ft_printf(const char *format, ...)
 	ft_write(pack);
 	return (pack->size);
 }
-
+/*
 int		main()
 {
-	printf("%d\n", ft_printf("%10.5i", -216));
-	printf("%d\n", printf("%10.5i", -216));
+	printf("%d\n", ft_printf("%0-10.5i", -216));
+//	printf("%d\n", printf("%0-10.5i", -216));
 	return (0);
 }
+*/
