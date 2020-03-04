@@ -6,160 +6,37 @@
 /*   By: mbahstou <mbahstou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 18:01:51 by mbahstou          #+#    #+#             */
-/*   Updated: 2020/02/27 16:34:23 by mbahstou         ###   ########.fr       */
+/*   Updated: 2020/03/03 18:59:28 by mbahstou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
 void	ft_unsigned(t_printf *pack)
 {
 	void	*arg;
 	int		cont;
-	int		len;
 
 	cont = 0;
 	arg = va_arg(pack->arg, void *);
-	pack->u = ft_itoa((unsigned int)arg);
-	len = ft_strlen(pack->u);
-	if (pack->zero == 1 && pack->dot == 0)
+	pack->d = ft_itoa((unsigned int)arg);
+	if (pack->width < 0)
 	{
-		if (pack->width > len)
-			ft_printhings(pack, len, '0');
-		while (pack->u[cont])
-		{
-			write(1, &pack->u[cont], 1);
-			cont++;
-			pack->size++;
-		}
+		pack->width *= -1;
+		pack->minus = 1;
 	}
+	if (pack->zero == 1 && pack->dot == 0 && pack->minus == 0)
+		ft_zeroint(pack, cont, ft_strlen(pack->d));
 	else if (pack->minus == 1)
-	{
-		if (pack->dot == 1)
-		{
-			if (pack->width > pack->precision)
-			{
-				if (pack->u[cont] == '0')
-					ft_printhingstwo(pack, 0, '0');
-				else
-					ft_printhingstwo(pack, len, '0');
-				if (pack->u[cont] == '0')
-					ft_printhings(pack, pack->precision, ' ');
-				else
-				{
-					while (pack->u[cont] != '\0')
-					{
-						write(1, &pack->u[cont], 1);
-						cont++;
-						pack->size++;
-					}
-					if (pack->precision > len)
-						ft_printhings(pack, pack->precision, ' ');
-					else
-						ft_printhings(pack, len, ' ');
-				}
-			}
-			else
-			{
-				ft_printhingstwo(pack, len, '0');
-				while (pack->u[cont] != '\0')
-				{
-					write(1, &pack->u[cont], 1);
-					cont++;
-					pack->size++;
-				}
-			}
-		}
-		else if (pack->width > len)
-		{
-			while (pack->u[cont] != '\0')
-			{
-				write(1, &pack->u[cont], 1);
-				cont++;
-				pack->size++;
-			}
-			ft_printhings(pack, len, ' ');
-		}
-		else
-		{
-			while (pack->u[cont] != '\0')
-			{
-				write(1, &pack->u[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-	}
+		ft_minusint(pack, cont, ft_strlen(pack->d));
 	else if (pack->dot == 1)
-	{
-		if (pack->precision > len)
-		{
-			if (pack->width != 0)
-			{
-				ft_printhings(pack, pack->precision, ' ');
-			}
-			ft_printhingstwo(pack, len, '0');
-			while (pack->u[cont] != '\0')
-			{
-				write(1, &pack->u[cont], 1);
-				cont++;
-				pack->size++;
-			}
-		}
-		else if (pack->width > pack->precision)
-		{
-			if (pack->precision < len)
-				if (pack->u[cont] == '0')
-					ft_printhings(pack, 0, ' ');
-				else
-					ft_printhings(pack, len, ' ');
-			else
-				ft_printhings(pack, pack->precision, ' ');
-			if (pack->u[cont] == '0')
-				return ;
-			else
-			{
-				while (pack->u[cont] != '\0')
-				{
-					write(1, &pack->u[cont], 1);
-					cont++;
-					pack->size++;
-				}
-			}
-		}
-		else
-		{
-			if (pack->u[cont] == '0')
-				return ;
-			else
-			{
-				while (pack->u[cont] != '\0')
-				{
-					write(1, &pack->u[cont], 1);
-					cont++;
-					pack->size++;
-				}
-			}
-		}
-	}
-	else if (pack->width > len && pack->dot == 0)
-	{
-		ft_printhings(pack, len, ' ');
-		while (pack->u[cont] != '\0')
-		{
-			write(1, &pack->u[cont], 1);
-			cont++;
-			pack->size++;
-		}
-	}
+		ft_preint(pack, cont, ft_strlen(pack->d));
+	else if (pack->width > ft_strlen(pack->d) && pack->dot == 0)
+		ft_widint(pack, cont, ft_strlen(pack->d));
 	else
-	{
-		while (pack->u[cont] != '\0')
+		while (pack->d[cont] != '\0')
 		{
-			write(1, &pack->u[cont], 1);
-			cont++;
+			write(1, &pack->d[cont++], 1);
 			pack->size++;
 		}
-	}
 }
